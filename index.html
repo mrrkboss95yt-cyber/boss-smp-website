@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS SMP Network | Next-Gen Minecraft</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* FIXED UNIFIED SMOOTH DARK BACKGROUND */
+        body {
+            background-color: #080c10;
+            background-image: linear-gradient(180deg, rgba(8, 12, 16, 0.92) 0%, rgba(8, 12, 16, 0.96) 100%), 
+                              url('https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=2000');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            background-size: cover;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* HEADER / NAVBAR */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 8%;
+            background: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+
+        .logo i { color: #10b981; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .nav-link-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link-btn:hover, .nav-link-btn.active {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .login-nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 0.55rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .login-nav-btn:hover { background: rgba(255, 255, 255, 0.15); }
+
+        .discord-top-btn {
+            background: #5865F2;
+            color: #fff;
+            padding: 0.55rem 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s ease;
+        }
+
+        .discord-top-btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        /* AUTH POPUP MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .auth-modal {
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 2.2rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            color: #64748b;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .close-modal:hover { color: #fff; }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.8rem;
+        }
+
+        .auth-tab {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .auth-tab.active { color: #10b981; }
+
+        .auth-msg {
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .auth-msg.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: block;
+        }
+
+        .auth-msg.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: block;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus { border-color: #10b981; }
+
+        .auth-submit-btn {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 0.85rem;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            margin-top: 0.4rem;
+        }
+
+        .auth-submit-btn:hover { background: #059669; }
+
+        /* PAGE TRANSITIONS */
+        .page {
+            min-height: 100vh;
+            width: 100%;
+            padding: 7.5rem 1rem 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        #page1 { align-items: center; }
+        #page-dashboard, #page-ranks, #page-tutorials { display: none; }
+
+        .hero {
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* WELCOME BADGE & BUTTONS */
+        .welcome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            padding: 0.4rem 1.1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+        }
+
+        .welcome-title span {
+            background: linear-gradient(135deg, #10b981 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-desc {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .continue-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: #fff;
+            border: none;
+            padding: 1.1rem 2.8rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(99, 102, 241, 0.8);
+        }
+
+        /* SERVER IP DISPLAY */
+        .ip-card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .ip-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 1.2rem 0.8rem 1.8rem;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 0.8rem;
+        }
+
+        .ip-info {
+            display: flex;
+            gap: 1.5rem;
+            text-align: left;
+        }
+
+        .ip-group span { display: block; }
+
+        .ip-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ip-val {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .btn-copy-ip {
+            background: #10b981;
+            color: #ffffff;
+            border: none;
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s ease;
+        }
+
+        .btn-copy-ip:hover { background: #059669; }
+
+        .crossplay-note {
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            color: #fde047;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* TITLES */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-title i { color: #10b981; }
+
+        .section-sub {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        /* DISCORD BUY RANKS BANNER */
+        .buy-ranks-banner {
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.25) 0%, rgba(16, 185, 129, 0.25) 100%);
+            border: 1px solid rgba(88, 101, 242, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.2rem 1.8rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+
+        .buy-ranks-info h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+
+        .buy-ranks-info p {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .buy-discord-btn {
+            background: #5865F2;
+            color: #fff;
+            padding: 0.65rem 1.4rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .buy-discord-btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+        }
+
+        /* RANKS SECTION GRID */
+        .ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .rank-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            padding: 1.8rem;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .rank-card:hover {
+            transform: translateY(-5px);
+            border-color: #10b981;
+        }
+
+        .rank-badge {
+            font-size: 2.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .rank-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+        }
+
+        .rank-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #10b981;
+            margin-bottom: 1rem;
+            background: rgba(16, 185, 129, 0.12);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .rank-card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 0.5rem;
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .rank-card ul li {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            margin-bottom: 0.65rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .rank-card ul li i { 
+            color: #10b981; 
+            margin-top: 3px;
+        }
+
+        .rank-buy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s ease;
+        }
+
+        .rank-buy-btn:hover {
+            background: #10b981;
+            border-color: #10b981;
+            color: #fff;
+        }
+
+        /* YELLOW GLOWING NOTICE BAR FOR THUMBNAIL QUALITY */
+        .yellow-glow-notice {
+            background: rgba(234, 179, 8, 0.12);
+            border: 1px solid rgba(234, 179, 8, 0.6);
+            color: #fef08a;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            max-width: 850px;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+        }
+
+        .yellow-glow-notice i {
+            color: #facc15;
+            font-size: 1.1rem;
+        }
+
+        /* FIXED 16:9 RESPONSIVE VIDEO CONTAINER */
+        .video-wrapper {
+            max-width: 850px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* FEATURES GRID */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .card.koth-card {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.08);
+        }
+
+        .card-icon {
+            font-size: 1.4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .koth-card .card-icon { color: #f59e0b; }
+
+        .card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 0.3rem;
+        }
+
+        .card ul li {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card ul li .allowed { color: #10b981; }
+        .card ul li .banned { color: #ef4444; }
+        .card ul li .highlight { color: #f59e0b; font-weight: 700; }
+
+        /* GEM ITEMS GRID */
+        .gem-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1rem;
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .gem-item-card {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 0.9rem 1.1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #6ee7b7;
+        }
+
+        .gem-item-card i {
+            color: #10b981;
+            font-size: 1.1rem;
+        }
+
+        /* YOUTUBE SECTION */
+        .yt-card {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            backdrop-filter: blur(8px);
+        }
+
+        .yt-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .yt-info p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .yt-btn {
+            background: #ef4444;
+            color: #fff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .yt-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* DISCORD SECTION */
+        .discord-card {
+            background: rgba(88, 101, 242, 0.12);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 16px;
+            padding: 1.8rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            backdrop-filter: blur(8px);
+        }
+
+        .discord-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .discord-info p {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .discord-big-btn {
+            background: #5865F2;
+            color: #fff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .discord-big-btn:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 10px; padding: 0.8rem 4%; }
+            .welcome-title { font-size: 2.3rem; }
+            .ip-card { flex-direction: column; gap: 1rem; }
+            .buy-ranks-banner { flex-direction: column; text-align: center; gap: 1rem; }
+            .discord-card, .yt-card { flex-direction: column; text-align: center; gap: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUTHENTICATION POPUP MODAL -->
+    <div class="modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeAuthModal()"></i>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+            </div>
+
+            <div id="authMsg" class="auth-msg"></div>
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="text" id="loginIgn" placeholder="In-Game Username (IGN)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPass" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Login to Account</button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)" style="display: none;">
+                <div class="form-group">
+                    <input type="text" id="regRealName" placeholder="Real Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="regIgn" placeholder="In-Game Username (IGN)" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPass" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Register Now</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header>
+        <div class="logo" onclick="switchPage('page1')">
+            <i class="fa-solid fa-crown"></i> BOSS SMP
+        </div>
+
+        <!-- NAVIGATION LINKS -->
+        <ul class="nav-links" id="mainNavLinks" style="display: none;">
+            <li><button class="nav-link-btn active" id="navDash" onclick="switchPage('dashboard')"><i class="fa-solid fa-gauge"></i> Dashboard</button></li>
+            <li><button class="nav-link-btn" id="navRanks" onclick="switchPage('ranks')"><i class="fa-solid fa-gem"></i> Ranks</button></li>
+            <li><button class="nav-link-btn" id="navTutorials" onclick="switchPage('tutorials')"><i class="fa-solid fa-play"></i> Tutorials</button></li>
+        </ul>
+
+        <div class="nav-right">
+            <button class="login-nav-btn" id="navUserBtn" onclick="openAuthModal()"><i class="fa-regular fa-user"></i> Login</button>
+            <a href="https://discord.gg/pU3FF96es" target="_blank" class="discord-top-btn">
+                <i class="fa-brands fa-discord"></i> Discord
+            </a>
+        </div>
+    </header>
+
+    <!-- PAGE 1: WELCOME SCREEN -->
+    <div id="page1" class="page active">
+        <main class="hero">
+            <div class="welcome-badge">
+                <i class="fa-solid fa-bolt"></i> Ultimate Minecraft Network
+            </div>
+            
+            <h1 class="welcome-title">
+                Welcome To <br>
+                <span>Boss SMP Network</span>
+            </h1>
+
+            <p class="welcome-desc">
+                Join our active survival world featuring custom claims, unique economy, zero lag performance, and crossplay support for Bedrock & Java!
+            </p>
+
+            <button class="continue-btn" onclick="switchPage('dashboard')">
+                Click to Continue <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </main>
+    </div>
+
+    <!-- PAGE 2: DASHBOARD -->
+    <div id="page-dashboard" class="page">
+        <main class="hero">
+            
+            <!-- IP & PORT CARD & NOTICE -->
+            <div class="ip-card-wrapper">
+                <div class="ip-card">
+                    <div class="ip-info">
+                        <div class="ip-group">
+                            <span class="ip-label">Server IP Address</span>
+                            <span class="ip-val" id="ipText">bosssmp.linkpc.net</span>
+                        </div>
+                        <div class="ip-group">
+                            <span class="ip-label">Port (Bedrock/PE)</span>
+                            <span class="ip-val">19133</span>
+                        </div>
+                    </div>
+                    <button class="btn-copy-ip" onclick="copyIp()">
+                        <i class="fa-regular fa-copy"></i> Copy IP
+                    </button>
+                </div>
+
+                <div class="crossplay-note">
+                    <i class="fa-solid fa-circle-info"></i> Note: Both Java & Bedrock Edition players must use the exact same IP & Port to connect!
+                </div>
+            </div>
+
+            <!-- SERVER FEATURES GRID -->
+            <div id="featuresSection">
+                <div class="section-title">
+                    <i class="fa-solid fa-shield-halved"></i> SERVER FEATURES & RULES
+                </div>
+                <p class="section-sub">Explore what makes Boss SMP Network unique and fair for everyone</p>
+
+                <div class="features-grid">
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h3>Bliss SMP</h3>
+                        <p>An enhanced survival mode packed with unique abilities, custom tools, and intense world events.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-gem"></i></div>
+                        <h3>Gems Survival</h3>
+                        <p>Earn and trade rare gems to unlock overpowered gear, items, and exclusive perks.</p>
+                    </div>
+
+                    <!-- KOTH CARD -->
+                    <div class="card koth-card">
+                        <div class="card-icon"><i class="fa-solid fa-trophy"></i></div>
+                        <h3>KOTH Event Rules</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-clock highlight"></i> Event Time: 6:00 PM – 7:00 PM</li>
+                            <li><i class="fa-solid fa-check allowed"></i> Weapons: Sword & Spear Allowed</li>
+                            <li><i class="fa-solid fa-xmark banned"></i> Mace Banned</li>
+                            <li><i class="fa-solid fa-xmark banned"></i> Turtle Master Banned</li>
+                            <li><i class="fa-solid fa-xmark banned"></i> Slow Falling Banned</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon"><i class="fa-solid fa-gavel"></i></div>
+                        <h3>Server Rules</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check allowed"></i> X-Ray Texture Pack Allowed</li>
+                            <li><i class="fa-solid fa-xmark banned"></i> Netherite Armor Banned</li>
+                            <li><i class="fa-solid fa-xmark banned"></i> No Hacking / Fly Mods</li>
+                            <li><i class="fa-solid fa-check allowed"></i> TPA Active</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLISS SMP GEM ITEMS SECTION -->
+            <div class="section-title">
+                <i class="fa-solid fa-boxes-stacked"></i> BLISS SMP GEM ITEMS
+            </div>
+            <p class="section-sub">Exclusive custom items available in the Bliss SMP progression system</p>
+
+            <div class="gem-items-grid">
+                <div class="gem-item-card"><i class="fa-solid fa-flask"></i> Energy Bottle</div>
+                <div class="gem-item-card"><i class="fa-solid fa-angles-up"></i> Upgrader</div>
+                <div class="gem-item-card"><i class="fa-solid fa-right-left"></i> Trader</div>
+                <div class="gem-item-card"><i class="fa-solid fa-puzzle-piece"></i> Gem Fragment</div>
+                <div class="gem-item-card"><i class="fa-solid fa-wrench"></i> Repair Kit</div>
+                <div class="gem-item-card"><i class="fa-solid fa-star"></i> Restoration Item</div>
+                <div class="gem-item-card"><i class="fa-solid fa-heart-circle-bolt"></i> Heart Swap</div>
+                <div class="gem-item-card"><i class="fa-solid fa-rotate"></i> Heart Cycler</div>
+            </div>
+
+            <!-- DISCORD SECTION -->
+            <div class="discord-card">
+                <div class="discord-info">
+                    <h3><i class="fa-brands fa-discord"></i> Join Our Official Discord</h3>
+                    <p>Get instant updates, player support, giveaways, and connect with the community!</p>
+                </div>
+                <a href="https://discord.gg/pU3FF96es" target="_blank" class="discord-big-btn">
+                    Join Discord Server
+                </a>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- PAGE 3: RANKS -->
+    <div id="page-ranks" class="page">
+        <main class="hero">
+            <div class="section-title">
+                <i class="fa-solid fa-crown"></i> SERVER RANKS
+            </div>
+            <p class="section-sub">Unlock exclusive perks, custom kits, and special privileges in BOSS SMP</p>
+
+            <!-- JOIN DISCORD BUY BANNER -->
+            <div class="buy-ranks-banner">
+                <div class="buy-ranks-info">
+                    <h3><i class="fa-brands fa-discord"></i> Want to buy any of these Ranks?</h3>
+                    <p>Join our Discord server and open a ticket to buy ranks instantly!</p>
+                </div>
+                <a href="https://discord.gg/pU3FF96es" target="_blank" class="buy-discord-btn">
+                    <i class="fa-solid fa-ticket"></i> Buy on Discord
+                </a>
+            </div>
+
+            <div class="ranks-grid">
+                <!-- PRO RANK -->
+                <div class="rank-card">
+                    <div>
+                        <div class="rank-badge">⚡</div>
+                        <div class="rank-title" style="color: #38bdf8;">PRO Rank</div>
+                        <div class="rank-price">₹50</div>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> PRO Special Chat Tag</li>
+                            <li><i class="fa-solid fa-check"></i> Access to <b>PRO Kit</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>4 Max Homes</b> Set</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Amethyst Pickaxe</b> Included</li>
+                            <li><i class="fa-solid fa-check"></i> Priority Server Access</li>
+                        </ul>
+                    </div>
+                    <a href="https://discord.gg/pU3FF96es" target="_blank" class="rank-buy-btn">Buy Rank (₹50)</a>
+                </div>
+
+                <!-- LEGEND RANK -->
+                <div class="rank-card">
+                    <div>
+                        <div class="rank-badge">🔥</div>
+                        <div class="rank-title" style="color: #a855f7;">LEGEND Rank</div>
+                        <div class="rank-price">₹100</div>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Legend Glowing Chat Tag</li>
+                            <li><i class="fa-solid fa-check"></i> Access to <b>Legend Kit</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>6 Max Homes</b> Set</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Amethyst Pickaxe</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>Amethyst Sword</b> Included</li>
+                        </ul>
+                    </div>
+                    <a href="https://discord.gg/pU3FF96es" target="_blank" class="rank-buy-btn">Buy Rank (₹100)</a>
+                </div>
+
+                <!-- BOSS RANK -->
+                <div class="rank-card" style="border-color: rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.08);">
+                    <div>
+                        <div class="rank-badge">👑</div>
+                        <div class="rank-title" style="color: #f59e0b;">BOSS Rank</div>
+                        <div class="rank-price">₹150</div>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Ultimate <b>BOSS</b> Prefix & Role</li>
+                            <li><i class="fa-solid fa-check"></i> Access to <b>BOSS Kit</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>10 Max Homes</b> Set</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Amethyst Pickaxe</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>Amethyst Tree Chopper</b></li>
+                            <li><i class="fa-solid fa-check"></i> Custom Nicknames & Full Perks</li>
+                        </ul>
+                    </div>
+                    <a href="https://discord.gg/pU3FF96es" target="_blank" class="rank-buy-btn" style="background: #f59e0b; color:#000;">Buy Rank (₹150)</a>
+                </div>
+
+                <!-- BOOST RANK (FREE - UNLIMITED HOMES ADDED) -->
+                <div class="rank-card" style="border-color: rgba(236, 72, 153, 0.5); background: rgba(236, 72, 153, 0.08);">
+                    <div>
+                        <div class="rank-badge">🚀</div>
+                        <div class="rank-title" style="color: #ec4899;">BOOST Rank</div>
+                        <div class="rank-price" style="color: #ec4899; background: rgba(236, 72, 153, 0.15);">FREE</div>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Exclusive <b>Booster Role</b> Tag</li>
+                            <li><i class="fa-solid fa-check"></i> Access to <b>Boost Kit</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>Unlimited Max Homes</b> Set</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Requirement:</b> Boost our Discord Server!</li>
+                        </ul>
+                    </div>
+                    <a href="https://discord.gg/pU3FF96es" target="_blank" class="rank-buy-btn" style="background: #ec4899; color:#fff;">Boost Discord</a>
+                </div>
+
+                <!-- MEDIA RANK (FREE - UNLIMITED HOMES ADDED) -->
+                <div class="rank-card" style="border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.08);">
+                    <div>
+                        <div class="rank-badge">🎥</div>
+                        <div class="rank-title" style="color: #ef4444;">MEDIA Rank</div>
+                        <div class="rank-price" style="color: #ef4444; background: rgba(239, 68, 68, 0.15);">FREE</div>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Special <b>Media Creator</b> Tag</li>
+                            <li><i class="fa-solid fa-check"></i> Access to <b>Media Kit</b></li>
+                            <li><i class="fa-solid fa-check"></i> <b>Unlimited Max Homes</b> Set</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Req 1:</b> 500+ Subscribers</li>
+                            <li><i class="fa-solid fa-check"></i> <b>Req 2:</b> Long Video (500+ Views) OR Shorts (1k+ Views)</li>
+                        </ul>
+                    </div>
+                    <a href="https://discord.gg/pU3FF96es" target="_blank" class="rank-buy-btn" style="background: #ef4444; color:#fff;">Apply via Discord</a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 4: TUTORIALS -->
+    <div id="page-tutorials" class="page">
+        <main class="hero">
+            <div class="section-title">
+                <i class="fa-solid fa-circle-play"></i> TUTORIAL & FEATURES GUIDE
+            </div>
+            <p class="section-sub">Watch this tutorial video to learn how to join and explore all features of BOSS SMP</p>
+
+            <!-- YELLOW GLOWING NOTICE -->
+            <div class="yellow-glow-notice">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Note: Video thumbnail web page par thoda blur lag sakta hai, aap direct video play karke 4K HD quality mein dekh sakte hain!</span>
+            </div>
+
+            <!-- 16:9 RESPONSIVE PLAYER -->
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/kOq2dyX5cuk?rel=0&modestbranding=1" 
+                        title="BOSS SMP Tutorial Video" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- YOUTUBE CHANNEL PROMO -->
+            <div class="yt-card">
+                <div class="yt-info">
+                    <h3><i class="fa-brands fa-youtube"></i> Official YouTube Channel</h3>
+                    <p>Subscribe to @RKBOSS95YT for server updates, tutorials, and gameplay videos!</p>
+                </div>
+                <a href="https://www.youtube.com/@RKBOSS95YT" target="_blank" class="yt-btn">
+                    Subscribe Channel
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const authModal = document.getElementById('authModal');
+        const authMsg = document.getElementById('authMsg');
+        const mainNavLinks = document.getElementById('mainNavLinks');
+
+        let registeredUsers = JSON.parse(localStorage.getItem('boss_smp_users') || '{}');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkSessionValidity();
+        });
+
+        function checkSessionValidity() {
+            const activeSession = JSON.parse(localStorage.getItem('boss_smp_session') || 'null');
+            
+            if (activeSession) {
+                const now = new Date().getTime();
+                if (now < activeSession.expiresAt) {
+                    activeSession.expiresAt = now + (7 * 24 * 60 * 60 * 1000);
+                    localStorage.setItem('boss_smp_session', JSON.stringify(activeSession));
+
+                    document.getElementById('navUserBtn').innerHTML = `<i class="fa-solid fa-user-check"></i> ${activeSession.realName}`;
+                    closeAuthModal();
+                } else {
+                    localStorage.removeItem('boss_smp_session');
+                }
+            }
+        }
+
+        // PAGE SWITCHING SYSTEM
+        function switchPage(targetPageId) {
+            const pages = ['page1', 'page-dashboard', 'page-ranks', 'page-tutorials'];
+            
+            pages.forEach(pId => {
+                const p = document.getElementById(pId);
+                if(p) {
+                    p.classList.remove('active');
+                    p.style.display = 'none';
+                }
+            });
+
+            if(targetPageId !== 'page1') {
+                mainNavLinks.style.display = 'flex';
+            } else {
+                mainNavLinks.style.display = 'none';
+            }
+
+            document.querySelectorAll('.nav-link-btn').forEach(btn => btn.classList.remove('active'));
+
+            let activeTarget = document.getElementById('page-' + targetPageId) || document.getElementById(targetPageId);
+            if(activeTarget) {
+                activeTarget.style.display = 'flex';
+                setTimeout(() => activeTarget.classList.add('active'), 50);
+            }
+
+            if(targetPageId === 'dashboard') document.getElementById('navDash').classList.add('active');
+            if(targetPageId === 'ranks') document.getElementById('navRanks').classList.add('active');
+            if(targetPageId === 'tutorials') document.getElementById('navTutorials').classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openAuthModal() { authModal.classList.remove('hidden'); }
+
+        function closeAuthModal() {
+            authModal.classList.add('hidden');
+            authMsg.className = 'auth-msg';
+            authMsg.style.display = 'none';
+        }
+
+        function switchAuthTab(type) {
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            authMsg.style.display = 'none';
+
+            if(type === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                loginForm.style.display = 'flex';
+                registerForm.style.display = 'none';
+            } else {
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'flex';
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const realName = document.getElementById('regRealName').value.trim();
+            const ign = document.getElementById('regIgn').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value;
+
+            if (registeredUsers[ign]) {
+                authMsg.className = 'auth-msg error';
+                authMsg.innerText = 'IGN already registered! Please login.';
+                return;
+            }
+
+            registeredUsers[ign] = { realName: realName, password: pass };
+            localStorage.setItem('boss_smp_users', JSON.stringify(registeredUsers));
+
+            authMsg.className = 'auth-msg success';
+            authMsg.innerText = 'Registration successful! Now please login.';
+            
+            setTimeout(() => {
+                switchAuthTab('login');
+                document.getElementById('loginIgn').value = ign;
+            }, 1200);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const ign = document.getElementById('loginIgn').value.trim().toLowerCase();
+            const pass = document.getElementById('loginPass').value;
+
+            if (!registeredUsers[ign]) {
+                authMsg.className = 'auth-msg error';
+                authMsg.innerText = 'Account not found! Please register first.';
+                return;
+            }
+
+            if (registeredUsers[ign].password !== pass) {
+                authMsg.className = 'auth-msg error';
+                authMsg.innerText = 'Incorrect password! Try again.';
+                return;
+            }
+
+            const expiryTime = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
+            const sessionData = {
+                ign: ign,
+                realName: registeredUsers[ign].realName,
+                expiresAt: expiryTime
+            };
+            localStorage.setItem('boss_smp_session', JSON.stringify(sessionData));
+
+            authMsg.className = 'auth-msg success';
+            authMsg.innerText = `Welcome back, ${registeredUsers[ign].realName}!`;
+            document.getElementById('navUserBtn').innerHTML = `<i class="fa-solid fa-user-check"></i> ${registeredUsers[ign].realName}`;
+
+            setTimeout(() => {
+                closeAuthModal();
+            }, 1000);
+        }
+
+        function copyIp() {
+            const ip = document.getElementById('ipText').innerText;
+            navigator.clipboard.writeText(ip);
+            alert('Server IP Copied: ' + ip);
+        }
+    </script>
+</body>
+</html>
